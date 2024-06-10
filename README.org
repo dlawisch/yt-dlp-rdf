@@ -29,28 +29,28 @@ Put your playlist URLs in `playlists.txt`, one per line.
 
 Default mode: downloads and generates RDF for all playlists:
    #+begin_src sh
-   python generate_playlist_rdf.py playlists.txt --download-path path/to/download
+   python main.py playlists.txt --download-path path/to/download
    #+end_src
 
 *** Download Only
 
 Just download, no RDF:
    #+begin_src sh
-   python generate_playlist_rdf.py playlists.txt --download-only --download-path path/to/download
+   python main.py playlists.txt --download-only --download-path path/to/download
    #+end_src
 
 *** RDF Only
 
 Generate RDF for already downloaded playlists:
    #+begin_src sh
-   python generate_playlist_rdf.py playlists.txt --rdf-only --download-path path/to/download
+   python main.py playlists.txt --rdf-only --download-path path/to/download
    #+end_src
 
 *** Verbose Mode
 
 For detailed logging:
    #+begin_src sh
-   python generate_playlist_rdf.py playlists.txt --verbose --download-path path/to/download
+   python main.py playlists.txt --verbose --download-path path/to/download
    #+end_src
 
 ** CLI Flags
