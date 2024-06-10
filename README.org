@@ -58,5 +58,5 @@ For detailed logging:
 - playlists_file: Path to the file containing playlist URLs.
 - --download-only: Only download the playlists without generating RDF files.
 - --rdf-only: Only generate RDF files for already downloaded playlists.
-- --download-path`: Path to the download directory. Defaults to `downloads`.
+- --download-path: Path to the download directory. Defaults to `downloads`.
 - --verbose: Enable detailed logging.* YouTube Playlist Downloader and Zotero RDF Generator
