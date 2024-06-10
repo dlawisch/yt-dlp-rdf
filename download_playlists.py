@@ -2,31 +2,41 @@ import subprocess
 import os
 import json
 import re
+import argparse
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from xml.sax.saxutils import escape
 from pathvalidate import sanitize_filename
 
 def format_date(date_str):
-    #print("Trying date", date_str)
+    """
+    Formats the date string to 'YYYY-MM-DD' format.
+    If parsing fails, returns the current date in 'YYYY-MM-DD' format.
+    """
     try:
         date_obj = datetime.strptime(date_str, '%Y%m%d')
-        #print("Got", date_obj.strftime('%Y-%m-%d'))
         return date_obj.strftime('%Y-%m-%d')
     except ValueError:
-        print("date problem")
         return datetime.now().strftime('%Y-%m-%d')
 
 def extract_video_index(filename):
+    """
+    Extracts the video index from the filename using regex.
+    Returns the index as an integer or None if no match is found.
+    """
     match = re.match(r"(\d+)", filename)
     return int(match.group(1)) if match else None
 
+def download_playlist(playlist_url, download_directory):
+    """
+    Downloads the playlist using yt-dlp and saves metadata files in the specified directory.
+    """
+    # subprocess.run(['yt-dlp', '--download-archive', '-N16', '--format', 'bv*[ext=mp4]', '-S', '+res:720,codec,br', '--embed-subs', '--embed-thumbnail', '--write-info-json', '--sponsorblock-mark', 'all', '--output', '%(playlist)s/%(playlist_index)s %(title)s.%(ext)s', playlist_url])
 
-def process_playlist(playlist_url, download_directory):
-    # Run yt-dlp to download the playlist and export metadata
-    subprocess.run(['yt-dlp', '--download-archive', '-N16', '--format', 'bv*[ext=mp4]', '-S', '+res:720,codec,br', '--embed-subs', '--embed-thumbnail', '--write-info-json', '--sponsorblock-mark', 'all', '--output', '%(playlist)s/%(playlist_index)s %(title)s.%(ext)s', playlist_url])
-
-    # Parse playlist metadata
+def generate_rdf(playlist_url, download_directory):
+    """
+    Generates an RDF file for the downloaded playlist and saves it in the specified directory.
+    """
     playlist_info_json = None
     for filename in os.listdir(download_directory):
         if filename.endswith('.info.json') and int(filename.split(maxsplit=1)[0]) == 0:
@@ -42,7 +52,6 @@ def process_playlist(playlist_url, download_directory):
     playlist_description = playlist_info_json.get('description', '')
     playlist_date = format_date(playlist_info_json.get('modified_date', 'aaa'))
 
-    # Start building the RDF content
     rdf_content = f'''<rdf:RDF
 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 xmlns:z="http://www.zotero.org/namespaces/export#"
@@ -77,11 +86,9 @@ xmlns:link="http://purl.org/rss/1.0/modules/link/">
 
     video_index_total = sum(1 for filename in os.listdir(download_directory) if filename.endswith('.info.json')) - 1
 
-    # Process each video metadata
     for filename in os.listdir(download_directory):
         if filename.endswith('.info.json'):
             video_index = extract_video_index(filename)
-            # print(video_index)
             if video_index == 0:
                 continue
 
@@ -144,37 +151,46 @@ xmlns:link="http://purl.org/rss/1.0/modules/link/">
 </rdf:RDF>
 '''
 
-    # Save RDF content to file
     rdf_file_path = os.path.join(download_directory, sanitize_filename(f'{playlist_title}.rdf'))
     with open(rdf_file_path, 'w', encoding='utf-8') as rdf_file:
         rdf_file.write(rdf_content)
 
     print(f'RDF file created: {rdf_file_path}')
 
-
 def main():
-    # Read playlist URLs from playlists.txt
-    with open('playlists.txt', 'r') as file:
+    parser = argparse.ArgumentParser(description="Download YouTube playlists and generate Zotero RDF files.")
+    parser.add_argument('playlists_file', type=str, help="Path to the file containing playlist URLs.")
+    parser.add_argument('--download-only', action='store_true', help="Only download the playlists.")
+    parser.add_argument('--rdf-only', action='store_true', help="Only generate RDF files for already downloaded playlists.")
+
+    args = parser.parse_args()
+
+    with open(args.playlists_file, 'r') as file:
         playlist_urls = file.read().strip().split('\n')
 
     with ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
         futures = []
         for playlist_url in playlist_urls:
-            # Create a directory for each playlist
             playlist_id = playlist_url.split('list=')[-1]
-            download_directory = os.path.join('downloads', playlist_id)
+            download_directory = os.path.realpath('.')
             os.makedirs(download_directory, exist_ok=True)
 
-            # Submit each playlist processing task to the executor
-            futures.append(executor.submit(process_playlist, playlist_url, download_directory))
+            if args.download_only:
+                print("Download only")
+                futures.append(executor.submit(download_playlist, playlist_url, download_directory))
+            elif args.rdf_only:
+                print("RDF only")
+                futures.append(executor.submit(generate_rdf, playlist_url, download_directory))
+            else:
+                print("Download and RDF")
+                futures.append(executor.submit(download_playlist, playlist_url, download_directory))
+                futures.append(executor.submit(generate_rdf, playlist_url, download_directory))
 
-        # Wait for all futures to complete
         for future in as_completed(futures):
             try:
                 future.result()
             except Exception as e:
                 print(f'Error: {e}')
-
 
 if __name__ == '__main__':
     main()
