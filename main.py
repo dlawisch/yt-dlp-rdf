@@ -44,12 +44,11 @@ def download_playlist(playlist_url, download_directory):
     Downloads the playlist using yt-dlp and saves metadata files in the specified directory.
     """
     logging.info("Downloading playlist: %s", playlist_url)
-    yt_dlp_command = ['yt-dlp', '--download-archive', '--format','"bv*[ext=mp4]"', '-S', '+res:720,codec,br', '--embed-subs', '--embed-thumbnail', '--write-info-json', '--sponsorblock-mark', 'all', 'no-progress', '--verbose', '--output', f'{download_directory}/%(playlist)s/%(playlist_index)s %(title)s.%(ext)s', playlist_url]
+
+    yt_dlp_command = ['yt-dlp','--format', 'bv*[ext=mp4]', '-S', '+res~540,codec,br', '--write-auto-sub', '--embed-subs', '--convert-thumbnails', 'jpg', '--embed-thumbnail', '--write-info-json', '--sponsorblock-mark', 'all', '--quiet', '--verbose', '--download-archive',  f'{download_directory}/archive.txt' , '--output', f'{download_directory}/%(playlist)s/%(playlist_index)s %(title)s.%(ext)s', playlist_url]
     logging.info(' '.join(yt_dlp_command))
     result = subprocess.run(
         yt_dlp_command,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
         text=True
     )
     if result.returncode == 0:
