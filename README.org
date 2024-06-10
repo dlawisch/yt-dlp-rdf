@@ -6,8 +6,8 @@ Download YouTube playlists and generate Zotero RDF XML files.
 
 1. Clone it:
    #+begin_src sh
-   git clone https://github.com/yourusername/yourrepository.git
-   cd yourrepository
+     git clone https://github.com/dlawisch/yt-dlp-rdf
+     cd yt-dlp-rdf
    #+end_src
 
 2. Set up a virtual environment:
@@ -55,8 +55,8 @@ For detailed logging:
 
 ** CLI Flags
 
-- `playlists_file`: Path to the file containing playlist URLs.
-- `--download-only`: Only download the playlists without generating RDF files.
-- `--rdf-only`: Only generate RDF files for already downloaded playlists.
-- `--download-path`: Path to the download directory. Defaults to `downloads`.
-- `--verbose`: Enable detailed logging.* YouTube Playlist Downloader and Zotero RDF Generator
+- playlists_file: Path to the file containing playlist URLs.
+- --download-only: Only download the playlists without generating RDF files.
+- --rdf-only: Only generate RDF files for already downloaded playlists.
+- --download-path`: Path to the download directory. Defaults to `downloads`.
+- --verbose: Enable detailed logging.* YouTube Playlist Downloader and Zotero RDF Generator
