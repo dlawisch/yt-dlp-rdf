@@ -197,23 +197,21 @@ def main():
     with open(args.playlists_file, 'r') as file:
         playlist_urls = file.read().strip().split('\n')
 
-    download_path = os.path.realpath(args.download_path)
-    os.makedirs(download_path, exist_ok=True)
+    download_directory = os.path.realpath(args.download_path)
+    os.makedirs(download_directory, exist_ok=True)
 
     with ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
         futures = []
         for playlist_url in playlist_urls:
             playlist_id = playlist_url.split('list=')[-1]
-            playlist_download_directory = os.path.join(download_path, playlist_id)
-            os.makedirs(playlist_download_directory, exist_ok=True)
 
             if args.download_only:
-                futures.append(executor.submit(download_playlist, playlist_url, playlist_download_directory))
+                futures.append(executor.submit(download_playlist, playlist_url, download_directory))
             elif args.rdf_only:
-                futures.append(executor.submit(generate_rdf, playlist_url, playlist_download_directory))
+                futures.append(executor.submit(generate_rdf, playlist_url, download_directory))
             else:
-                futures.append(executor.submit(download_playlist, playlist_url, playlist_download_directory))
-                futures.append(executor.submit(generate_rdf, playlist_url, playlist_download_directory))
+                futures.append(executor.submit(download_playlist, playlist_url, download_directory))
+                futures.append(executor.submit(generate_rdf, playlist_url, download_directory))
 
         for future in as_completed(futures):
             try:
