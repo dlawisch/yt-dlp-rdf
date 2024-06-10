@@ -1,6 +1,6 @@
 * YouTube Playlist Downloader and Zotero RDF Generator
 
-This script downloads YouTube playlists with `yt-dlp` and generates Zotero RDF XML files.
+Download YouTube playlists and generate Zotero RDF XML files.
 
 ** Setup
 
@@ -10,7 +10,13 @@ This script downloads YouTube playlists with `yt-dlp` and generates Zotero RDF X
    cd yourrepository
    #+end_src
 
-2. Install dependencies:
+2. Set up a virtual environment:
+   #+begin_src sh
+     python -m venv venv
+     source venv/bin/activate   # On Windows, `venv\Scripts\activate`
+   #+end_src
+
+3. Install dependencies:
    #+begin_src sh
    pip install -r requirements.txt
    #+end_src
@@ -46,3 +52,11 @@ For detailed logging:
    #+begin_src sh
    python generate_playlist_rdf.py playlists.txt --verbose --download-path path/to/download
    #+end_src
+
+** CLI Flags
+
+- `playlists_file`: Path to the file containing playlist URLs.
+- `--download-only`: Only download the playlists without generating RDF files.
+- `--rdf-only`: Only generate RDF files for already downloaded playlists.
+- `--download-path`: Path to the download directory. Defaults to `downloads`.
+- `--verbose`: Enable detailed logging.* YouTube Playlist Downloader and Zotero RDF Generator

@@ -13,7 +13,7 @@ def setup_logging(verbose):
     """
     Sets up logging configuration.
     """
-    log_level = logging.DEBUG if verbose else logging.INFO
+    log_level = logging.DEBUG if verbose else logging.WARNING
     logging.basicConfig(
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         level=log_level
@@ -45,7 +45,7 @@ def download_playlist(playlist_url, download_directory):
     """
     logging.info("Downloading playlist: %s", playlist_url)
     result = subprocess.run(
-        ['yt-dlp', '--download-archive', '-N16', '--format', 'bv*[ext=mp4]', '-S', '+res:720,codec,br', '--embed-subs', '--embed-thumbnail', '--write-info-json', '--sponsorblock-mark', 'all', '--quiet', '--verbose', '--output', f'{download_directory}/%(playlist)s/%(playlist_index)s %(title)s.%(ext)s', playlist_url],
+        ['yt-dlp', '--download-archive', '--format', 'bv*[ext=mp4]', '-S', '+res:720,codec,br', '--embed-subs', '--embed-thumbnail', '--write-info-json', '--sponsorblock-mark', 'all', 'no-progress', '--quiet', '--verbose', '--output', f'{download_directory}/%(playlist)s/%(playlist_index)s %(title)s.%(ext)s', playlist_url],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True
