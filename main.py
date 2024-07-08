@@ -201,24 +201,16 @@ def main():
     download_directory = os.path.realpath(args.download_path)
     os.makedirs(download_directory, exist_ok=True)
 
-    with ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
-        futures = []
-        for playlist_url in playlist_urls:
-            playlist_id = playlist_url.split('list=')[-1]
+    for playlist_url in playlist_urls:
+        playlist_id = playlist_url.split('list=')[-1]
 
-            if args.download_only:
-                futures.append(executor.submit(download_playlist, playlist_url, download_directory))
-            elif args.rdf_only:
-                futures.append(executor.submit(generate_rdf, playlist_url, download_directory))
-            else:
-                futures.append(executor.submit(download_playlist, playlist_url, download_directory))
-                futures.append(executor.submit(generate_rdf, playlist_url, download_directory))
-
-        for future in as_completed(futures):
-            try:
-                future.result()
-            except Exception as e:
-                logging.error('Error: %s', e)
+        if args.download_only:
+            download_playlist(playlist_url, download_directory)
+        elif args.rdf_only:
+            generate_rdf(playlist_url, download_directory)
+        else:
+            download_playlist(playlist_url, download_directory)
+            generate_rdf(playlist_url, download_directory)
 
 if __name__ == '__main__':
     main()
