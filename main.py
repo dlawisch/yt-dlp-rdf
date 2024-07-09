@@ -172,12 +172,8 @@ xmlns:link="http://purl.org/rss/1.0/modules/link/">
             <z:itemType>attachment</z:itemType>
             <rdf:resource rdf:resource=\"./{video_file_mp4}\"/>
             <dc:title>{video_title}.mp4</dc:title>
-            <dc:identifier>
-                <dcterms:URI>
-                   <rdf:value>{video_url}</rdf:value>
-                </dcterms:URI>
-            </dc:identifier>
             <dcterms:dateSubmitted>{datetime.now().isoformat()}</dcterms:dateSubmitted>
+            <z:linkMode>1</z:linkMode>
             <link:type>video/mp4</link:type>
         </z:Attachment>'''
 
