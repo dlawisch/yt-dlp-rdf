@@ -69,8 +69,9 @@ def generate_rdf(playlist_url, download_directory):
     )
     playlist_title = json.loads(result.stdout)['title']
 
+    download_directory = os.path.join(download_directory,playlist_title)
     playlist_info_json = None
-    for filename in os.listdir(os.path.join(download_directory,playlist_title)):
+    for filename in os.listdir(download_directory):
         if filename.endswith('.info.json') and int(filename.split(maxsplit=1)[0]) == 0:
             with open(os.path.join(download_directory, filename), 'r', encoding='utf-8') as f:
                 playlist_info_json = json.load(f)
