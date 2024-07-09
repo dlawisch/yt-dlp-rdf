@@ -114,6 +114,7 @@ xmlns:link="http://purl.org/rss/1.0/modules/link/">
             </dcterms:URI>
         </dc:identifier>
         <dcterms:dateSubmitted>{datetime.now().isoformat()}</dcterms:dateSubmitted>
+        <dc:description>Issue: {playlist_id}</dc:description>
         <z:type>Playlist</z:type>
         <prism:number>{playlist_id}</prism:number>
     </rdf:Description>'''
@@ -169,7 +170,7 @@ xmlns:link="http://purl.org/rss/1.0/modules/link/">
         </bib:Recording>
         <z:Attachment rdf:about="{video_id}">
             <z:itemType>attachment</z:itemType>
-            <rdf:resource>{video_file_mp4}</rdf:resource>
+            <rdf:resource rdf:resource=\"./{video_file_mp4}\"/>
             <dc:title>{video_title}.mp4</dc:title>
             <dc:identifier>
                 <dcterms:URI>
