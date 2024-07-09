@@ -45,7 +45,7 @@ def download_playlist(playlist_url, download_directory):
     """
     logging.info("Downloading playlist: %s", playlist_url)
 
-    yt_dlp_command = ['yt-dlp','--format', 'bv*[ext=mp4]', '-S', '+res~540,codec,br', '-N8', '--write-auto-sub', '--embed-subs', '--convert-thumbnails', 'jpg', '--embed-thumbnail', '--write-info-json', '--sponsorblock-mark', 'all', '--quiet', '--verbose', '--download-archive',  f'{download_directory}/archive.txt' , '--output', f'{download_directory}/%(playlist)s/%(playlist_index)s %(title)s.%(ext)s', playlist_url]
+    yt_dlp_command = ['yt-dlp','--format', 'b[ext=mp4]', '-S', '+res~540,codec,br', '-N8', '--write-auto-sub', '--embed-subs', '--convert-thumbnails', 'jpg', '--embed-thumbnail', '--write-info-json', '--sponsorblock-mark', 'all', '--quiet', '--verbose', '--download-archive',  f'{download_directory}/archive.txt' , '--output', f'{download_directory}/%(playlist)s/%(playlist_index)s %(title)s.%(ext)s', playlist_url]
     logging.info(' '.join(yt_dlp_command))
     result = subprocess.run(
         yt_dlp_command,
