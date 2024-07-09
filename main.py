@@ -178,7 +178,6 @@ xmlns:link="http://purl.org/rss/1.0/modules/link/">
                 </dcterms:URI>
             </dc:identifier>
             <dcterms:dateSubmitted>{datetime.now().isoformat()}</dcterms:dateSubmitted>
-            <z:linkMode>1</z:linkMode>
             <link:type>video/mp4</link:type>
         </z:Attachment>'''
 
